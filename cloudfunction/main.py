@@ -7,7 +7,7 @@ def _dataflow_job_start(data, context):
     SOURCE_BUCKET = os.environ['SOURCE_BUCKET']
     DATA_BUCKET = data['bucket']
     file_path = data['name']
-    if not file_name.startswith('file_prefix/')
+    if not file_path.startswith('file_prefix/'):
       return 0
     job = 'replace_text_' + '_'.join(file_path.split('/'))
     template = f"gs://{SOURCE_BUCKET}/template/replace_text"

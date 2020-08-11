@@ -4,7 +4,7 @@ variable "data_bucket" {}
 variable "source_bucket" {}
 
 provider "google" {
-  version = "3.5.0"
+  version = "3.33.0"
   project = var.project
   region  = var.region
 }
@@ -14,9 +14,6 @@ terraform {
     bucket = "your-tfstate-bucket"
     prefix = "gcp-cloudfunction-dataflow-gcs2gcs-tf/tfstat"
   }
-}
-
-data "google_project" "project" {
 }
 
 resource "google_cloudfunctions_function" "function" {
@@ -35,13 +32,14 @@ resource "google_cloudfunctions_function" "function" {
   event_trigger {
     event_type = "google.storage.object.finalize"
     resource = var.data_bucket
+    failure_policy {
+      retry = false
+    }
   }
 }
 
 # IAM entry for all users to invoke the function
 resource "google_cloudfunctions_function_iam_member" "invoker" {
-  project        = var.project
-  region         = var.region
   cloud_function = google_cloudfunctions_function.function.name
 
   role   = "roles/cloudfunctions.invoker"
